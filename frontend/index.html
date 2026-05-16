@@ -1,1 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>US Stock & Currency Research MCP</title>
+  <meta
+    name="description"
+    content="US Stock & Currency Research MCP helps teams research U.S. stocks, currencies, and market signals with a clean workflow built for fast analysis."
+  />
+  <style>
+    :root {
+      --bg: #f6fbff;
+      --surface: #ffffff;
+      --surface-2: #eef6ff;
+      --text: #10233f;
+      --muted: #5e718d;
+      --primary: #1666ff;
+      --primary-dark: #0f4fcc;
+      --border: #dbe8f8;
+      --success: #0f9d74;
+      --shadow: 0 12px 30px rgba(20, 70, 140, 0.10);
+      --radius: 18px;
+      --max: 1180px;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(22, 102, 255, 0.08), transparent 30%),
+        linear-gradient(180deg, #f9fcff 0%, #f3f8ff 100%);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: min(100% - 2rem, var(--max));
+      margin: 0 auto;
+    }
+
+    .section {
+      padding: 84px 0;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(22, 102, 255, 0.10);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      margin: 0.9rem 0 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      max-width: 760px;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.82);
+      border-bottom: 1px solid rgba(219, 232, 248, 0.8);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 74px;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #69a1ff);
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: var(--shadow);
+      font-size: 1.1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.95rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 10px 24px rgba(22, 102, 255, 0.22);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: #bfd6f7;
+      transform: translateY(-1px);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 72px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      margin: 1rem 0 1rem;
+      max-width: 12ch;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 60ch;
+      margin: 0 0 1.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .dashboard {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .panel-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      background: #ebf3ff;
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 0.28rem 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+
+    .stat {
+      padding: 0.9rem;
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+
+    .stat h4 {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 1.05rem;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .mini-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #edf3fb;
+    }
+
+    .mini-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .mini-item span:first-child {
+      font-weight: 600;
+    }
+
+    .up {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    /* Features */
+    .cards {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+    }
+
+    .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(22,102,255,0.14), rgba(22,102,255,0.04));
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.15rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    /* Who it's for */
+    .audience-grid {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+
+    .audience-card ul {
+      margin: 0.8rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+    }
+
+    .audience-card li + li {
+      margin-top: 0.45rem;
+    }
+
+    /* Pricing */
+    .pricing-grid {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      align-items: stretch;
+    }
+
+    .price-card {
+      position: relative;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-card.featured {
+      border: 2px solid var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .price-card .tag {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: var(--primary);
+      color: white;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .price-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .price-desc {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      min-height: 48px;
+    }
+
+    .price {
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.2rem;
+    }
+
+    .price small {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .price-features {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 1.4rem;
+      display: grid;
+      gap: 0.75rem;
+      color: var(--muted);
+    }
+
+    .price-features li::before {
+      content: "✓";
+      color: var(--primary);
+      font-weight: 800;
+      margin-right: 0.65rem;
+    }
+
+    .price-card .btn {
+      margin-top: auto;
+    }
+
+    /* FAQ */
+    .faq-list {
+      margin-top: 2rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    details {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details p {
+      color: var(--muted);
+      margin: 0.8rem 0 0;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      background: linear-gradient(180deg, #0f2444 0%, #15345f 100%);
+      color: #e8f1ff;
+      border-radius: 24px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .disclaimer h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .disclaimer p {
+      margin: 0.75rem 0 0;
+      color: #c7d8f2;
+    }
+
+    /* Footer */
+    footer {
+      padding: 28px 0 48px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-grid,
+      .cards,
+      .audience-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        max-width: none;
+      }
+
+      .price-card.featured {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.9rem 0;
+      }
+
+      .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .section {
+        padding: 68px 0;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .disclaimer {
+        padding: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#top" class="brand">
+        <div class="brand-mark">↗</div>
+        <span>US Stock & Currency Research MCP</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#who">Who it is for</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="#disclaimer">Disclaimer</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Market research, simplified</span>
+          <h1>Research U.S. stocks and currencies with speed and clarity.</h1>
+          <p>
+            US Stock & Currency Research MCP gives analysts, founders, and finance teams a clean,
+            structured way to explore market trends, compare assets, monitor currency movement,
+            and turn raw data into research-ready insights.
+          </p>
+          <div class="hero-actions">
+            <a href="#pricing" class="btn btn-primary">Get Started</a>
+            <a href="#features" class="btn btn-secondary">See Features</a>
+          </div>
+          <div class="hero-meta">
+            <span>✓ Fast market research workflows</span>
+            <span>✓ Built for stocks + FX monitoring</span>
+            <span>✓ Clean outputs for decision support</span>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="dashboard">
+            <div class="panel">
+              <div class="panel-top">
+                <div class="panel-title">Research Snapshot</div>
+                <div class="badge">Live workflow</div>
+              </div>
+              <div class="stat-grid">
+                <div class="stat">
+                  <h4>Coverage</h4>
+                  <strong>U.S. Equities</strong>
+                </div>
+                <div class="stat">
+                  <h4>Focus</h4>
+                  <strong>FX + Macro</strong>
+                </div>
+                <div class="stat">
+                  <h4>Output</h4>
+                  <strong>Actionable Notes</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-top">
+                <div class="panel-title">Tracked Signals</div>
+                <div class="badge">Updated views</div>
+              </div>
+              <div class="mini-list">
+                <div class="mini-item">
+                  <span>USD Strength Index</span>
+                  <span class="up">+1.8%</span>
+                </div>
+                <div class="mini-item">
+                  <span>Large Cap Watchlist</span>
+                  <span>12 names</span>
+                </div>
+                <div class="mini-item">
+                  <span>Research Briefs Generated</span>
+                  <span>48 today</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <div class="container">
+        <span class="eyebrow">Features</span>
+        <h2 class="section-title">Everything needed for focused financial research.</h2>
+        <p class="section-subtitle">
+          Designed to help you move from question to insight quickly, without cluttered dashboards
+          or fragmented analysis workflows.
+        </p>
+
+        <div class="cards">
+          <div class="card">
+            <div class="icon">📈</div>
+            <h3>Stock research workflows</h3>
+            <p>
+              Explore U.S. equities with structured views for trends, watchlists, sector comparison,
+              and deeper research summaries.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">💱</div>
+            <h3>Currency monitoring</h3>
+            <p>
+              Track dollar-linked movement, compare major currency pairs, and understand how FX
+              shifts may influence business and investment research.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">🧠</div>
+            <h3>Research-ready outputs</h3>
+            <p>
+              Turn raw market signals into clean, readable summaries that are easier to share with
+              teammates, clients, or internal stakeholders.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">⚡</div>
+            <h3>Fast signal discovery</h3>
+            <p>
+              Surface important changes quickly so you can spend more time interpreting markets and
+              less time assembling information.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">🔎</div>
+            <h3>Comparative analysis</h3>
+            <p>
+              Review stocks, sectors, and currencies side by side to identify momentum, divergence,
+              and broader context.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="icon">🛡️</div>
+            <h3>Built for responsible use</h3>
+            <p>
+              Clear framing helps teams use research outputs as decision support rather than
+              guaranteed predictions or personalized advice.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who it is for -->
+    <section id="who" class="section">
+      <div class="container">
+        <span class="eyebrow">Who it is for</span>
+        <h2 class="section-title">Made for teams that need better market context.</h2>
+        <p class="section-subtitle">
+          Whether you're conducting investment research, planning internationally, or building
+          finance-enabled products, this MCP helps bring structure to your workflow.
+        </p>
+
+        <div class="audience-grid">
+          <div class="card audience-card">
+            <div class="icon">🏢</div>
+            <h3>Finance teams</h3>
+            <p>Support internal analysis with faster snapshots across stocks, FX, and macro context.</p>
+            <ul>
+              <li>Market monitoring</li>
+              <li>Research summaries</li>
+              <li>Cross-asset comparison</li>
+            </ul>
+          </div>
+
+          <div class="card audience-card">
+            <div class="icon">🚀</div>
+            <h3>Founders & operators</h3>
+            <p>Understand currency exposure and public-market signals that may affect planning.</p>
+            <ul>
+              <li>Budget sensitivity</li>
+              <li>Global expansion context</li>
+              <li>Executive briefing support</li>
+            </ul>
+          </div>
+
+          <div class="card audience-card">
+            <div class="icon">📊</div>
+            <h3>Researchers & analysts</h3>
+            <p>Accelerate desk research with a cleaner way to organize data, questions, and outputs.</p>
+            <ul>
+              <li>Thematic research</li>
+              <li>Asset comparison</li>
+              <li>Report preparation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <span class="eyebrow">Pricing</span>
+        <h2 class="section-title">Simple plans for individuals and teams.</h2>
+        <p class="section-subtitle">
+          Start small, scale as needed, and choose the workflow depth that matches your research needs.
+        </p>
+
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="price-name">Starter</div>
+            <div class="price-desc">For individual users exploring stock and currency research.</div>
+            <div class="price">\$19 <small>/ month</small></div>
+            <ul class="price-features">
+              <li>Basic stock research views</li>
+              <li>Currency monitoring</li>
+              <li>Saved watchlists</li>
+              <li>Email support</li>
+            </ul>
+            <a href="#" class="btn btn-secondary">Choose Starter</a>
+          </div>
+
+          <div class="price-card featured">
+            <div class="tag">Most Popular</div>
+            <div class="price-name">Pro</div>
+            <div class="price-desc">For analysts and operators who need deeper workflows and faster output.</div>
+            <div class="price">\$49 <small>/ month</small></div>
+            <ul class="price-features">
+              <li>Everything in Starter</li>
+              <li>Advanced comparative analysis</li>
+              <li>Research brief generation</li>
+              <li>Priority support</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Choose Pro</a>
+          </div>
+
+          <div class="price-card">
+            <div class="price-name">Team</div>
+            <div class="price-desc">For organizations that need shared workflows and collaboration.</div>
+            <div class="price">\$149 <small>/ month</small></div>
+            <ul class="price-features">
+              <li>Everything in Pro</li>
+              <li>Team collaboration</li>
+              <li>Shared research templates</li>
+              <li>Admin controls</li>
+            </ul>
+            <a href="#" class="btn btn-secondary">Choose Team</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="container">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="section-title">Common questions.</h2>
+
+        <div class="faq-list">
+          <details>
+            <summary>What does MCP mean in this product?</summary>
+            <p>
+              MCP refers to the product framework and workflow layer that helps organize stock and
+              currency research into a more consistent, reusable process.
+            </p>
+          </details>
+
+          <details>
+            <summary>Is this for active trading or research support?</summary>
+            <p>
+              This product is positioned for research support, market monitoring, and analysis
+              workflows. It is not a guarantee of outcomes and should not be treated as a substitute
+              for professional financial advice.
+            </p>
+          </details>
+
+          <details>
+            <summary>Can teams collaborate inside the platform?</summary>
+            <p>
+              Yes. Team plans are designed for shared workflows, consistent research templates, and
+              easier collaboration across analysts and stakeholders.
+            </p>
+          </details>
+
+          <details>
+            <summary>Does it cover both stocks and currencies?</summary>
+            <p>
+              Yes. The product is designed specifically around U.S. stock research and currency
+              monitoring so users can evaluate both company-level and broader market context together.
+            </p>
+          </details>
+
+          <details>
+            <summary>Is the information financial advice?</summary>
+            <p>
+              No. The platform provides tools and research support only. Users should evaluate all
+              information independently and consult qualified professionals where appropriate.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Financial Disclaimer -->
+    <section id="disclaimer" class="section">
+      <div class="container">
+        <div class="disclaimer">
+          <h3>Financial Disclaimer</h3>
+          <p>
+            US Stock & Currency Research MCP is provided for informational and research purposes only.
+            Nothing on this page or in the product should be interpreted as investment, legal,
+            tax, or financial advice.
+          </p>
+          <p>
+            Market data, research summaries, and analytical outputs may be incomplete, delayed,
+            or subject to error. Past performance does not guarantee future results, and all
+            investing and currency-related decisions involve risk, including possible loss of principal.
+          </p>
+          <p>
+            You should perform your own due diligence and consult a licensed financial advisor or
+            other qualified professional before making investment or business decisions based on
+            any information generated by this product.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2026 US Stock & Currency Research MCP</div>
+      <div>Modern research workflows for stocks, FX, and market context.</div>
+    </div>
+  </footer>
+</body>
+</html>
