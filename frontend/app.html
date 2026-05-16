@@ -1,1 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock & FX Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4f8fc;
+      --card: #ffffff;
+      --text: #1a2b3c;
+      --muted: #6b7c93;
+      --primary: #1f6feb;
+      --primary-dark: #1557b0;
+      --border: #d9e2ec;
+      --success: #15803d;
+      --danger: #dc2626;
+      --shadow: 0 10px 24px rgba(31, 111, 235, 0.08);
+      --radius: 16px;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    p.subtitle {
+      margin: 0 0 24px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid var(--border);
+      min-height: 90px;
+      white-space: pre-wrap;
+    }
+
+    .loading {
+      color: var(--muted);
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    .success {
+      color: var(--success);
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Stock & FX Dashboard</h1>
+    <p class="subtitle">Fetch stock data and foreign exchange rates from your backend API.</p>
+
+    <div class="grid">
+      <!-- Stock Card -->
+      <div class="card">
+        <h2>Get Stock</h2>
+        <label for="ticker">Stock Ticker</label>
+        <input id="ticker" type="text" placeholder="e.g. AAPL" />
+
+        <button id="stockBtn">Get Stock</button>
+
+        <div id="stockResult" class="result">Stock result will appear here.</div>
+      </div>
+
+      <!-- FX Card -->
+      <div class="card">
+        <h2>Get FX Rate</h2>
+        <label for="fromCurrency">From Currency</label>
+        <input id="fromCurrency" type="text" placeholder="e.g. USD" />
+
+        <label for="toCurrency">To Currency</label>
+        <input id="toCurrency" type="text" placeholder="e.g. EUR" />
+
+        <button id="fxBtn">Get FX Rate</button>
+
+        <div id="fxResult" class="result">FX result will appear here.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tickerInput = document.getElementById('ticker');
+    const fromCurrencyInput = document.getElementById('fromCurrency');
+    const toCurrencyInput = document.getElementById('toCurrency');
+
+    const stockBtn = document.getElementById('stockBtn');
+    const fxBtn = document.getElementById('fxBtn');
+
+    const stockResult = document.getElementById('stockResult');
+    const fxResult = document.getElementById('fxResult');
+
+    function setLoading(element, message = 'Loading...') {
+      element.className = 'result loading';
+      element.textContent = message;
+    }
+
+    function setError(element, message) {
+      element.className = 'result error';
+      element.textContent = message;
+    }
+
+    function setSuccess(element, message) {
+      element.className = 'result success';
+      element.textContent = message;
+    }
+
+    function formatJson(data) {
+      return JSON.stringify(data, null, 2);
+    }
+
+    async function getStock() {
+      const ticker = tickerInput.value.trim().toUpperCase();
+
+      if (!ticker) {
+        setError(stockResult, 'Please enter a stock ticker.');
+        return;
+      }
+
+      setLoading(stockResult, 'Fetching stock data...');
+
+      try {
+        const response = await fetch(`/api/stock?ticker=${encodeURIComponent(ticker)}`);
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setSuccess(stockResult, formatJson(data));
+      } catch (error) {
+        setError(stockResult, `Failed to fetch stock data: ${error.message}`);
+      }
+    }
+
+    async function getFxRate() {
+      const from = fromCurrencyInput.value.trim().toUpperCase();
+      const to = toCurrencyInput.value.trim().toUpperCase();
+
+      if (!from || !to) {
+        setError(fxResult, 'Please enter both from-currency and to-currency.');
+        return;
+      }
+
+      setLoading(fxResult, 'Fetching FX rate...');
+
+      try {
+        const response = await fetch(
+          `/api/fx?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setSuccess(fxResult, formatJson(data));
+      } catch (error) {
+        setError(fxResult, `Failed to fetch FX rate: ${error.message}`);
+      }
+    }
+
+    stockBtn.addEventListener('click', getStock);
+    fxBtn.addEventListener('click', getFxRate);
+
+    tickerInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') getStock();
+    });
+
+    toCurrencyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') getFxRate();
+    });
+
+    fromCurrencyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') getFxRate();
+    });
+  </script>
+</body>
+</html>
