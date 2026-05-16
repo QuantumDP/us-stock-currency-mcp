@@ -1,1 +1,23 @@
-
+{
+  "name": "us-stock-currency-research-mcp-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker for stock and currency HTTP endpoints with future MCP-style tool support.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "start": "wrangler dev"
+  },
+  "keywords": [
+    "cloudflare-worker",
+    "stocks",
+    "currency",
+    "fx",
+    "mcp"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
